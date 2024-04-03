@@ -7,7 +7,7 @@ import pandas
 from bs4 import BeautifulSoup
 
 # Define the location of the directory
-directory = r"C:/Users/u0149275/OneDrive - KU Leuven/keep_Ving/emma-1.0_full/EMMA_Corpus/corpus/test"
+directory = r"C:/Users/u0149275/OneDrive - KU Leuven/keep_Ving/emma-1.0_full/EMMA_Corpus/corpus/raw"
 
 # Change the directory
 os.chdir(directory)
@@ -21,7 +21,7 @@ def read_file(path):
         texts = bs_data.find_all('doc')  # Finding all instances of tag
         hits_df = pandas.DataFrame(columns=column_names)
         for text in texts:
-            pattern = r"kee?ps?t??[a-zA-Z0-9_\n ]*\w+ing[\W]*"  # regex: looks for keep + -ing form
+            pattern = r"kee?ps?t?[\w\n ]+ing\b"  # regex: looks for keep + -ing form
             for match in re.finditer(pattern, str(text)):
                 lcontext = str(text)[match.start()-100: match.start()]
                 kwic = str(text)[match.start(): match.end()]
@@ -46,9 +46,9 @@ for file in tqdm(os.listdir(), total=13750):
 
 # add metadata
 metadata = pandas.read_excel("C:/Users/u0149275/OneDrive - KU "
-                             "Leuven/keep_Ving/emma-1.0_full/EMMA_Corpus/EMMA_metadata_copy.xlsx",
+                             "Leuven/keep_Ving/emma-1.0_full/EMMA_Corpus/EMMA_metadata_v2.xlsx",
                              sheet_name=0, header=0)
-print(metadata)
+
 final_df = final_df.merge(metadata, how='inner', left_on='File', right_on='Clean_FileName')
 print(final_df)
-final_df.to_excel("output.xlsx")
+final_df.to_excel("output3.xlsx")
